@@ -2,7 +2,7 @@
 name: add-n-commit
 description: Stages all current changes with git add and commits with a custom message. Use when you want to commit all pending changes in one action. The commit message will be expanded to approximately 50 tokens with no references to Claude, AI models, or automated processes.
 allowed-tools: Bash
-model: claude-haiku-4-5-20251001
+model: haiku
 user-invocable: true
 ---
 
@@ -37,7 +37,10 @@ When the user invokes `/add-n-commit 'message'`:
    - Ensure the expanded message:
      - Remains clear and professional
      - Contains NO references to "Claude", "AI", "model", "automated", or similar terms
+     - Contains NO references to co-authors anywhere (including Co-Authored-By footers)
      - Follows conventional commit style (imperative mood: "Add feature" not "Added feature")
+   - Provide the commit message to the user, and get an user feedback. Once user confirms, proceed.
+     - If user provides feedback, recreate the commit message based on the user feedback.
 3. Run `git add .`
 4. Run `git commit -m "[expanded message]"` (use HEREDOC syntax for safety with special characters)
 5. Run `git log -1` to show the created commit
@@ -62,4 +65,5 @@ Then commits with that expanded message.
 - Keep the core intent of the user's message
 - Never force push or rewrite history
 - Never automatically push - user handles that separately
+- Never use emojis, tick or cross icons in the commit message.
 - If git status shows nothing to commit, abort and inform the user

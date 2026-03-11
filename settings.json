@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "respectGitignore": true,
+  "cleanupPeriodDays": 20,
+  "permissions": {
+    "allow": [
+      "Bash(python *)",
+      "Bash(tree *)",
+      "Bash(pytest *)",
+      "Bash(pip *)",
+      "Bash(source ~/.venv_gen/bin/activate)",
+      "Bash(uv *)",
+      "Bash(ruff *)",
+      "Bash(black *)",
+      "Bash(mypy *)",
+      "Bash(pnpm *)",
+      "Bash(npm run *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch *)",
+      "Bash(git stash *)",
+      "Read(~/.zshrc)",
+      "Read(~/.bashrc)",
+      "Read(~/.gitconfig)",
+      "Bash(ls:*)",
+      "Bash(mkdir *)",
+      "Bash(mv *)",
+      "Bash(cp *)",
+      "Bash(touch *)",
+      "Bash(git add *)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets/**)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git rm *)",
+      "Bash(git reset --hard *)",
+      "Bash(git rebase *)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(git clean *)",
+      "Bash(sudo *)",
+      "Bash(rm *)",
+      "Bash(docker *)",
+      "Bash(kill *)"
+    ],
+    "defaultMode": "default"
+  },
+  "model": "haiku",
+  "statusLine": {
+    "type": "command",
+    "command": "sh /Users/harish-5102/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "claude-md-management@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "nextjs-expert@buildwithclaude": true,
+    "commands-code-analysis-testing@buildwithclaude": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "sandbox": {
+    "enabled": false,
+    "autoAllowBashIfSandboxed": true,
+    "excludedCommands": [
+      "git",
+      "docker"
+    ]
+  },
+  "spinnerTipsEnabled": true,
+  "autoUpdatesChannel": "stable",
+  "skipDangerousModePermissionPrompt": true,
+  "showTurnDuration": true
+}
