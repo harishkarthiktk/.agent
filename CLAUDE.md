@@ -1,63 +1,38 @@
 # Claude Code User Preferences
 
-## Git and Version Control
+## Git
+- Never mention Claude in commit messages. Never auto-commit.
+- Suggest commits, but let user decide what to version control.
+- `/add-n-commit`: very short commit messages.
 
-- Never mention Claude in git commit messages.
-- Do not add and commit code without explicit user confirmation.
-- Not all changes require commits. Suggest adding and committing, but let the user decide what to version control.
+## Code Style
+- Prefer functions over classes. No over-engineering or unrequested features.
 
-## Code Style and Architecture
+## Planning
+- Explore alternate approaches; use `/gather` or `/ask-qna` skills to clarify requirements.
+- No code output during planning unless explicitly asked.
+- Offer to save plan as temporary .md in project root (delete after implementation).
+- Check if README.md needs updating. Offer Haiku switch after planning.
 
-- Avoid using classes whenever possible. Prefer functions and simpler constructs.
-- Keep code simple and straightforward. Avoid over-engineering or premature abstractions.
-- Only add features or improvements explicitly requested, not "nice-to-haves".
+## User Input
+- AskUserQuestion for ambiguous design decisions or genuine clarification needs.
+- Default to proceeding with confident assumptions.
 
-## Planning and Documentation
+## Writing Style
+- No emojis in any generated content (code, docs, comments, terminal output). Only use if user explicitly requests them.
+  - Do NOT generate: "// Fix bug 🐛", "## Setup 🚀", "✓ Success", "Features 🎯", code comments with emoji, or README content with emoji.
+- No emdashes (use hyphens/commas instead).
+- Post-operation summaries: max 5 lines, 200 words. Only summarize if asked.
 
-- Always read the project's README.md and local CLAUDE.md at the start to understand project context, setup, dependencies, and requirements.
-- Always explore alternate approaches whenever possible and use `AskUserQuestion` tool to gather pointers.
-- While planning, do not output code unless the user explicitly asks for it.
-- When planning, offer to commit the plan as a temporary .md file to the project root.
-- This file can be deleted after implementation is complete.
-- While planning also check if there is README.md for the project and if it is required to be updated.
-- ALWAYS offer to switch mode to Haiku after planning is completed, before implementation.
+## Execution
+- Python: `source ~/.venv_gen/bin/activate`. Use `python` not `python3`.
+- Docker: ALWAYS use `podman` and it's relevant command instead of docker commands.
+    - If a docker command is in the instruction, validate it's equivalent podman command and execute that instead.
+- Never auto-test or auto-write tests. Suggest only for critical functionality, write only if user confirms.
+- Estimate scope in approximate Opus tokens consumed (account for deep thinking overhead), not time.
+- While creating a plan, always include an implementation step to invoke `/make-to-do` skill to create atomic tasks while implementing.
+- While implementing a plan, always use `/make-to-do` skill to create task list and then implement. No exceptions, regardless of task size.
 
-## When to Ask for User Input
-
-- Use `AskUserQuestion` strategically for:
-  - Ambiguous design decisions where multiple valid approaches exist
-  - Hard-to-reverse or destructive actions (e.g., git push --force, deleting files)
-  - When genuine clarification is needed about user intent or requirements
-- For reversible, local actions, infer intent and proceed without asking
-- Default to proceeding with confident assumptions rather than asking for every decision
-
-## Writing Style and Output
-
-- Never use emojis. Use ticks or icons sparingly and only when absolutely necessary.
-- Never use emdashes. Replace with hyphens or commas as needed.
-- Do not summarize the entire steps completed after an operation. Only summarize if the user explicitly asks.
-- Post-operation summaries should be at most 5 lines with a maximum of 200 words total.
-
-## Implementation Guidelines
-
-- Estimate implementation scope in units of approximate tokens consumed, not time required.
-- This helps set realistic expectations about complexity rather than duration.
-
-## Operations and Execution Guidelines
-
-- `~/.venv_gen/bin/activate` has the necessary python dependencies. Always use it.
-- Always use python and not python3.
-- Do not test python scripts automatically, and only test if user asks it to be tested.
-- User will always run tests and attempts manually.
-- When using the `/add-n-commit` skill, always generate a very short commit message which the user can expand if required.
-- Do not write tests without user confirmation. Only propose to write tests if a functionality is critical; but even then suggest to user first and then write test if user confirms.
-
-## Test Failure Analysis
-
-When a test fails, do NOT automatically fix the test. Instead:
-1. Analyze whether the failure indicates a project bug or a test issue
-2. Examine the actual implementation code to understand behavior
-3. Determine the root cause before deciding what to fix
-4. Only fix the project code if the implementation is wrong, or fix the test if the test expectations are incorrect
-
-This prevents masking real bugs with incorrect tests or writing tests that don't match actual requirements.
+## Test Failures
+- Analyze root cause before fixing. Determine if failure is a project bug or test issue.
+- Fix implementation if wrong, fix test only if expectations are incorrect. Never auto-fix.

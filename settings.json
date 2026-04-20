@@ -78,5 +78,6 @@
   "spinnerTipsEnabled": true,
   "autoUpdatesChannel": "stable",
   "skipDangerousModePermissionPrompt": true,
-  "showTurnDuration": true
+  "showTurnDuration": true,
+  "effortLevel": "low"
 }
