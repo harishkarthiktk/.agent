@@ -1,0 +1,29 @@
+{
+  "skill_name": "subagent",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm considering adding Redis caching to improve API performance. /subagent Research whether we should add caching and identify which types of endpoints would benefit most. Consider trade-offs between complexity and performance gains.",
+      "expected_output": "Clean recommendations on caching strategy with specific use cases, no research transcript or exploration steps",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "/subagent Review this authentication code for security vulnerabilities:\n\nfunction authenticate(req, res, next) {\n  const token = req.headers.authorization;\n  if (!token) return res.status(401).json({error: 'No token'});\n  \n  const user = jwt.verify(token, 'hardcoded-secret-key');\n  req.user = user;\n  next();\n}\n\nIdentify vulnerabilities and suggest fixes.",
+      "expected_output": "Security issues identified with severity levels and code fixes. No research exploration visible.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "/subagent Investigate what happens to a PostgreSQL database when it reaches 100M+ rows. Research query performance impact, concurrent write limits, and whether we need to consider database migration or optimization strategies.",
+      "expected_output": "Research findings on database limits and optimization recommendations, presented as conclusions not exploration",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "/subagent This request is intentionally vague - can you just look at our code and tell me what improvements we should make?",
+      "expected_output": "Graceful acknowledgment of ambiguity with guidance on how to make a more specific request",
+      "files": []
+    }
+  ]
+}

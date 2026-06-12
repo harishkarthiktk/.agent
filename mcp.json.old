@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "meprime-mcp": {
+      "type": "stdio",
+      "command": "/bin/bash",
+      "args": [
+        "/Users/harish-5102/Documents/MEPrime/MCP-Testing/meprime-mcp/run-mcp-server.sh"
+      ]
+    }
+  }
+}

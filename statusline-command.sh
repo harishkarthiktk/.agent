@@ -3,7 +3,6 @@ input=$(cat)
 cwd=$(echo "$input" | jq -r '.workspace.current_dir')
 dir=$(basename "$cwd")
 
-# Real escape character for ANSI codes
 ESC=$(printf '\033')
 RESET="${ESC}[0m"
 CYAN="${ESC}[36m"
@@ -11,14 +10,18 @@ BLUE="${ESC}[34m"
 YELLOW="${ESC}[33m"
 MAGENTA="${ESC}[35m"
 GREEN="${ESC}[32m"
-RED="${ESC}[31m"
+DIM="${ESC}[2m"
 
 # Git branch (blue)
 git_part=""
 if git -C "$cwd" rev-parse --git-dir > /dev/null 2>&1; then
   branch=$(git -C "$cwd" --no-optional-locks symbolic-ref --short HEAD 2>/dev/null || git -C "$cwd" --no-optional-locks rev-parse --short HEAD 2>/dev/null)
   if [ -n "$branch" ]; then
-    git_part=" ${BLUE}git:${branch}${RESET}"
+    dirty=""
+    if ! git -C "$cwd" --no-optional-locks diff --quiet HEAD 2>/dev/null; then
+      dirty="*"
+    fi
+    git_part=" ${BLUE}git:${branch}${dirty}${RESET}"
   fi
 fi
 
@@ -40,52 +43,29 @@ if [ -n "$used" ]; then
   ctx_part=" ${GREEN}ctx:${used_int}%${RESET}"
 fi
 
-# Rate limit usage from transcript files (red)
-# Sums output tokens across all sessions within time windows.
-# Cap defaults are approximate for Claude Max (5x plan). Override via env vars:
-#   CLAUDE_5H_CAP_TOKENS  (default: 1000000)
-#   CLAUDE_7D_CAP_TOKENS  (default: 10000000)
-PROJECTS_DIR="${HOME}/.claude/projects"
-CAP_5H="${CLAUDE_5H_CAP_TOKENS:-1000000}"
-CAP_7D="${CLAUDE_7D_CAP_TOKENS:-10000000}"
-
-rate_part=""
-if [ -d "$PROJECTS_DIR" ] && command -v jq > /dev/null 2>&1; then
-  now_epoch=$(date +%s)
-  cutoff_5h=$((now_epoch - 18000))
-  cutoff_7d=$((now_epoch - 604800))
-
-  tokens_5h=0
-  tokens_7d=0
-
-  while IFS= read -r jsonl_file; do
-    [ -f "$jsonl_file" ] || continue
-    result=$(jq -r --argjson c5 "$cutoff_5h" --argjson c7 "$cutoff_7d" '
-      select(.type == "assistant" and .message.usage != null) |
-      .ts as $ts |
-      (.message.usage.output_tokens // 0) as $tok |
-      if ($ts >= $c5) then "5h \($tok)" else empty end,
-      if ($ts >= $c7 and $ts < $c5) then "7d \($tok)" else empty end
-    ' "$jsonl_file" 2>/dev/null)
-    while IFS=' ' read -r window tok; do
-      case "$window" in
-        5h) tokens_5h=$((tokens_5h + tok)) ;;
-        7d) tokens_7d=$((tokens_7d + tok)) ;;
-      esac
-    done <<EOF
-$result
-EOF
-  done <<FINDEOF
-$(find "$PROJECTS_DIR" -name "*.jsonl" 2>/dev/null)
-FINDEOF
-
-  # tokens_7d accumulates only the 5h-to-7d window above; add 5h tokens for total 7d
-  tokens_7d_total=$((tokens_7d + tokens_5h))
-
-  pct_5h=$(( (tokens_5h * 100) / CAP_5H ))
-  pct_7d=$(( (tokens_7d_total * 100) / CAP_7D ))
-
-  rate_part=" ${RED}5h:${pct_5h}% 7d:${pct_7d}%${RESET}"
+# Session duration
+duration_part=""
+tty_id=$(tty 2>/dev/null | tr '/' '_')
+if [ -n "$tty_id" ]; then
+  start_file="/tmp/claude-statusline-start${tty_id}"
+  if [ ! -f "$start_file" ]; then
+    touch "$start_file"
+  fi
+  if [ "$(uname)" = "Darwin" ]; then
+    start_ts=$(stat -f '%m' "$start_file")
+  else
+    start_ts=$(stat -c '%Y' "$start_file")
+  fi
+  now_ts=$(date +%s)
+  elapsed=$(( now_ts - start_ts ))
+  if [ "$elapsed" -ge 3600 ]; then
+    hrs=$(( elapsed / 3600 ))
+    mins=$(( (elapsed % 3600) / 60 ))
+    duration_part=" ${DIM}${hrs}h${mins}m${RESET}"
+  else
+    mins=$(( elapsed / 60 ))
+    duration_part=" ${DIM}${mins}m${RESET}"
+  fi
 fi
 
-printf "%s%s%s%s %s%s%s%s%s%s" "${CYAN}" "$dir" "${RESET}" "$git_part" "${YELLOW}" "$model" "${RESET}" "$zsh_part" "$ctx_part" "$rate_part"
+printf "%s%s%s%s %s%s%s%s%s%s" "${CYAN}" "$dir" "${RESET}" "$git_part" "${YELLOW}" "$model" "${RESET}" "$zsh_part" "$ctx_part" "$duration_part"
