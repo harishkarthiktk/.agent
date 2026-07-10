@@ -62,7 +62,7 @@ Read the full diff and generate a commit message:
 - Use conventional commit format strictly: `type(scope): description`
 - Valid types: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `style`, `perf`
 - If the user provided a hint message, use it to guide tone and intent - but the diff drives the actual content
-- No references to "Claude", "AI", "model", "automated", or similar terms
+- CLAUDE or it's model and Co-Author mentions should no be present in the message.
 - No co-author footers
 - No emojis, tick icons, or cross icons
 
@@ -118,8 +118,9 @@ Claude uses the hint as intent context and generates from the diff:
 Only stages `src/api/`, then generates from that diff:
 `feat(api): implement per-user rate limiting with Redis TTL`
 
-## Important Notes
+## Important Notes:
 
+- No references to "Claude", "AI", "model", "automated", or similar terms
 - Message is generated from the diff - the diff is the source of truth, not the user's hint
 - Risky file patterns to detect before staging: `.env`, `*.env.*`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `*secret*`, `*credential*`, `*password*`
 - Conventional commit types: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `style`, `perf`
