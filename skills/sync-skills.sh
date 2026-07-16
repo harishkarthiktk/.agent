@@ -18,7 +18,7 @@ for arg in "$@"; do
   esac
 done
 
-EXCLUDE="sync-skills.sh|.DS_Store"
+EXCLUDE="sync-skills\.sh|\.DS_Store"
 
 summary_ok=0
 summary_new=0
@@ -31,9 +31,9 @@ timestamp="$(date +%Y%m%d%H%M%S)"
 
 run() {
   if $DRY_RUN; then
-    echo "  [DRY-RUN] $*"
+    printf '  [DRY-RUN]'; printf ' %q' "$@"; echo
   else
-    eval "$@"
+    "$@"
   fi
 }
 
@@ -46,12 +46,13 @@ sync_target() {
 
   if [ ! -d "$target" ]; then
     echo "  Creating target directory..."
-    run "mkdir -p '$target'"
+    run mkdir -p "$target"
   fi
 
   for skill_path in "$SOURCE"/*/; do
     local skill
     skill="$(basename "$skill_path")"
+    skill_path="${skill_path%/}"
 
     if echo "$skill" | grep -qE "^($EXCLUDE)$"; then
       continue
@@ -77,7 +78,8 @@ sync_target() {
         echo "  [CONFLICT] $skill -> symlink points elsewhere: $link_target"
         summary_conflict=$((summary_conflict + 1))
         if $FIX_CONFLICTS; then
-          run "rm '$target_ent' && ln -s '$skill_path' '$target_ent'"
+          run rm "$target_ent"
+          run ln -s "$skill_path" "$target_ent"
           echo "     -> [FIXED] replaced symlink"
           summary_fixed=$((summary_fixed + 1))
         fi
@@ -87,14 +89,15 @@ sync_target() {
       summary_conflict=$((summary_conflict + 1))
       if $FIX_CONFLICTS; then
         local bak="$target_ent.bak.$timestamp"
-        run "mv '$target_ent' '$bak' && ln -s '$skill_path' '$target_ent'"
+        run mv "$target_ent" "$bak"
+        run ln -s "$skill_path" "$target_ent"
         echo "     -> [FIXED] backed up as $(basename "$bak")"
         summary_fixed=$((summary_fixed + 1))
       fi
     else
       echo "  [NEW]     $skill -> linking"
       summary_new=$((summary_new + 1))
-      run "ln -s '$skill_path' '$target_ent'"
+      run ln -s "$skill_path" "$target_ent"
     fi
   done
 }
@@ -113,7 +116,7 @@ clean_orphans_in_target() {
         echo "  [ORPHAN]  $name -> source deleted: $link_target"
         summary_orphan=$((summary_orphan + 1))
         if $CLEAN_ORPHANS; then
-          run "rm '$orphan'"
+          run rm "$orphan"
           echo "     -> [CLEANED] removed dead symlink"
           summary_cleaned=$((summary_cleaned + 1))
         fi
