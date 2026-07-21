@@ -18,7 +18,7 @@ for arg in "$@"; do
   esac
 done
 
-EXCLUDE="sync-skills\.sh|\.DS_Store"
+EXCLUDE="sync-skills\.sh|\.DS_Store|^z_archive_.*"
 
 summary_ok=0
 summary_new=0

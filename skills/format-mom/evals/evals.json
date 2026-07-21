@@ -1,0 +1,32 @@
+{
+  "skill_name": "format-mom",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "raw-bullet-notes",
+      "prompt": "Convert these meeting notes into MoM format",
+      "input_type": "inline",
+      "input_content": "Q4 Product Roadmap Review - Sept 15\n\nAttendees: Sarah, Michael, Priya\n\nFirst we reviewed the analytics dashboard project. Sarah mentioned the team needs access to real-time data. Michael said the current pipeline updates every 4 hours. We agreed to investigate streaming options. Sarah will look into Apache Kafka by next week.\n\nThen we discussed mobile app performance. Priya showed metrics showing 40% of users experience slow load times. We need to optimize image compression and lazy loading. Michael will work on the CDN setup. Priya will handle image optimization.\n\nResources: Check the performance metrics at https://metrics.internal.com and the design doc at https://docs.google.com/document/d/1234\n\nDecisions: 1) Prioritize mobile optimization in Q4 2) Allocate 2 engineers to dashboard project 3) Weekly syncs on progress starting next Monday",
+      "expected_output": "MoM file with Discussion Points grouped by topic (analytics/dashboard, mobile performance), clear Outcomes/Decisions with action items and owners",
+      "files": []
+    },
+    {
+      "id": 2,
+      "eval_name": "mixed-structure-notes",
+      "prompt": "Turn this into a properly formatted MoM",
+      "input_type": "inline",
+      "input_content": "Engineering Standup - Nov 3\n\nPeople: James (backend), Lisa (frontend), Raj (DevOps), Carmen (QA)\n\nBackend API changes\nWe've been working on the authentication refactor. The JWT implementation is almost done. James will have it ready for testing by Wednesday. There's a risk around the token refresh logic - might need to handle edge cases with expired sessions.\n\nFrontend updates  \nLisa is updating the UI components to match the new design system. The button component work is complete. She's moving on to forms next. Estimated 2 more weeks for all components.\n\nInfrastructure\nRaj mentioned the database backups are working but we need to test the recovery process. He'll schedule a drill for next sprint.\n\nQA stuff\nCarmen found some edge cases in the payment flow. She's documenting them. Needs clarification from backend team on error handling approach.\n\nLinks: Architecture diagram - https://excalidraw.com/api-design, Slack channel - https://slack.com/channels/eng\n\nMust do: JWT testing by Wednesday, form component design sign-off, backup recovery drill scheduled",
+      "expected_output": "MoM with grouped discussion points (Backend, Frontend, Infrastructure, QA), clear action items with owners and deadlines",
+      "files": []
+    },
+    {
+      "id": 3,
+      "eval_name": "paragraph-format-with-decisions",
+      "prompt": "Format this meeting transcript into MoM",
+      "input_type": "inline",
+      "input_content": "Client Kick-off Call - Healthcare Platform - October 28, 2024\n\nPresent: Alex (Project Manager), David (Client Lead), Nina (Technical Lead), the client's CTO Sarah and product manager Tom.\n\nWe started by reviewing the project scope. The client wants to build a patient data management system with HIPAA compliance. Sarah emphasized that security and data privacy are non-negotiable. We discussed the compliance requirements and timeline. The first MVP should be ready in 8 weeks focusing on patient records, appointment scheduling, and basic reporting.\n\nNext we covered technical architecture. Nina presented the proposed stack using a microservices approach with PostgreSQL and AWS. David asked about disaster recovery and backup strategy. We agreed to have a detailed infrastructure document ready by next Friday. Nina will own that.\n\nThe team also discussed the phased rollout plan. We'll have internal testing in weeks 1-6, client UAT in weeks 7-8, and then go-live. Sarah mentioned they need access to staging environment at the end of week 4 for their internal review. Tom said they need weekly status meetings to track progress.\n\nDocumentation and regulatory: We need HIPAA attestation, SOC2 documentation, and privacy policy. Alex will coordinate with legal team and create a compliance checklist by next Monday.\n\nDecided: 1) MVP in 8 weeks 2) Weekly status meetings every Tuesday 3) Infrastructure spec by Friday 4) Staging access at week 4 5) Compliance documentation owned by Alex",
+      "expected_output": "Professional MoM with clear discussion groupings (scope, architecture, rollout, compliance), all decisions and action items in Outcomes section with owners",
+      "files": []
+    }
+  ]
+}

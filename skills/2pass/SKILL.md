@@ -1,0 +1,1 @@
+/Users/harish-5102/Downloads/Programs/promptLibrary/skills/summarize-2pass.md
