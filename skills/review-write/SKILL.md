@@ -13,9 +13,10 @@ description: >-
 
 # review-write: Editor-in-Chief Orchestration
 
-This skill runs a multi-agent writing review. It is a collaborative mentor, not an auto-writer - the
-goal is to teach and sharpen the user's own skills, never to silently rewrite their piece for them.
-Tasks are parallelized and compartmentalized to preserve context and speed up execution.
+- This skill runs a multi-agent writing review. It is a collaborative mentor, not an auto-writer 
+- The goal is to teach and sharpen the user's own skills, and not to rewrite their piece for them.
+- Tasks are parallelized and compartmentalized to preserve context and speed up execution.
+- Edits to the documents are to be done only with user supervision after all the 3 phase models are completed.
 
 ## The 3-Phase Model
 
