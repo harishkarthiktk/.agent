@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PLACEHOLDER_TITLE</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-elixir/dist/style.css" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    #header {
+      padding: 14px 24px;
+      background: #1e1e2f;
+      color: #ffffff;
+      border-bottom: 1px solid #33334a;
+    }
+    #header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    #header p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: #b8b8c8;
+    }
+    #map {
+      width: 100%;
+      height: calc(100vh - 66px);
+    }
+    #legend {
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 10;
+      background: rgba(30, 30, 47, 0.92);
+      color: #e8e8f0;
+      border: 1px solid #33334a;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 11px;
+      line-height: 1.5;
+      max-width: 260px;
+    }
+    #legend b { color: #ffffff; font-weight: 600; }
+    #legend .row { margin-top: 4px; }
+    #legend .chip {
+      display: inline-block;
+      padding: 1px 6px;
+      margin-right: 4px;
+      border-radius: 4px;
+      background: #33334a;
+      font-size: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <h1>PLACEHOLDER_TITLE</h1>
+    <p>PLACEHOLDER_SUBTITLE</p>
+  </div>
+  <div id="map"></div>
+
+  <div id="legend">
+    <b>Feature tags</b> (priority · effort)
+    <div class="row"><span class="chip">table-stakes</span><span class="chip">differentiator</span><span class="chip">nice-to-have</span></div>
+    <div class="row">Effort: <span class="chip">low</span><span class="chip">med</span><span class="chip">high</span></div>
+  </div>
+
+  <script type="module">
+    import MindElixir from 'https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js'
+
+    // __MINDMAP_DATA_START__
+    const mindmapData = {
+      nodeData: {
+        id: 'root',
+        topic: 'PLACEHOLDER_TITLE',
+        children: []
+      }
+    }
+    // __MINDMAP_DATA_END__
+
+    const mind = new MindElixir({
+      el: '#map',
+      direction: MindElixir.SIDE,
+      toolBar: true,
+      keypress: true,
+      draggable: true,
+      contextMenu: true,
+    })
+
+    mind.init(mindmapData)
+  </script>
+</body>
+</html>

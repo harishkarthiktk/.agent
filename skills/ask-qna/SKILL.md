@@ -1,6 +1,6 @@
 ---
 name: ask-qna
-description: Demonstrates effective use of AskUserQuestion for gathering clarifications, handling ambiguity, and providing structured guidance through multi-question interactions.
+description: Best practices for using AskUserQuestion to gather clarifications, handle ambiguity, and guide decisions with structured multi-option interactions. Works both standalone and within plan mode.
 allowed-tools: Bash
 model: haiku
 user-invocable: true
@@ -16,6 +16,13 @@ This skill demonstrates best practices for using the `AskUserQuestion` tool to:
 - Present recommendations within questions
 - Handle multiple decision points in a single interaction
 - Guide users toward optimal choices
+- Make smart decisions about when to ask (and when not to)
+
+## Core Principle
+
+**Ask first, act second — but ask smart.** Not everything needs a question. Use AskUserQuestion for genuine ambiguity and decisions that matter. For things you can confidently infer from the codebase or context, just proceed. This skill works in two contexts:
+- **Standalone**: Before starting a task where clarity is needed
+- **Inside plan mode**: To gather requirements before finalizing your plan
 
 ## When to Use AskUserQuestion
 
@@ -28,6 +35,33 @@ Use this pattern when any of these scenarios apply:
 - **Configuration choices**: User preferences affect implementation approach
 - **Scope clarification**: Need to confirm what should/shouldn't be included
 - **Architecture decisions**: Multiple valid architectural patterns available
+- **Mid-execution surprises**: You discover something unexpected during work (dependency conflict, missing context) that needs user judgment
+
+## When NOT to Use AskUserQuestion
+
+Avoid asking when:
+
+- **You can determine it by reading the code**: If the user says "fix the login bug", read the login code first — you might not need to ask anything
+- **It has an obvious answer**: Don't ask yes/no questions where the answer is clear from context
+- **It's trivial**: Choosing between two equivalent variable names doesn't warrant a question — just decide
+- **It's hypothetical**: Don't ask about future features or "what if" scenarios — focus on the actual task at hand
+
+## What to Ask: The Framework
+
+When you do ask, focus on four dimensions:
+
+1. **What** — What is the concrete deliverable? (A file? A refactor? A plan? A fix?)
+2. **Where** — Which files, directories, or systems are involved?
+3. **Constraints** — Are there style preferences, tech restrictions, or things to avoid?
+4. **Scope** — How far should this go? (Minimal fix vs thorough overhaul? This file only vs entire project?)
+
+## Using Ask-QnA: Two Contexts
+
+### Standalone (Outside Plan Mode)
+Use this skill when you're mid-task and need to clarify something, or when starting a task where requirements are unclear but you don't need a full plan. Ask the questions, process the answers, and proceed directly.
+
+### Inside Plan Mode
+Invoke this skill (or follow its patterns) while you're in `EnterPlanMode`. Ask clarifying questions, incorporate the answers into your plan, finalize the plan, then exit and execute. This is the recommended pattern for non-trivial work.
 
 ## Recommended Scenarios
 
@@ -119,9 +153,11 @@ When implementing a skill that uses AskUserQuestion:
 ## Key Best Practices
 
 - Include 1-4 questions per interaction (not more)
-- Mark recommended options with "(Recommended)"
+- Mark recommended options with "(Recommended)" in the label
 - Provide brief descriptions for each option explaining trade-offs
 - Use header labels (max 12 chars) to categorize questions
+- Use `multiSelect: true` when choices are not mutually exclusive (e.g., "Which of these do you want?")
+- Use the `preview` field with markdown when comparing code snippets, UI layouts, or configuration options — helps users see the trade-offs visually
 - Ask dependent questions only if needed (don't ask all upfront)
 - Validate that user's choices make sense together
 - Provide clear next steps after gathering answers
@@ -129,6 +165,8 @@ When implementing a skill that uses AskUserQuestion:
 ## Anti-Patterns to Avoid
 
 - Asking yes/no questions (use options instead)
+- Asking yes/no questions that have obvious answers (if the answer is clear, don't ask)
+- Asking for confirmation on every small decision (trivial choices don't warrant questions)
 - Including vague options like "Other approach"
 - Asking about hypothetical future needs
 - Overwhelming user with 6+ questions at once

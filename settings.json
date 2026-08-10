@@ -5,6 +5,7 @@
   "permissions": {
     "allow": [
       "Bash(python *)",
+      "Bash(rtk *)",
       "Bash(tree *)",
       "Bash(pytest *)",
       "Bash(pip *)",
@@ -51,7 +52,8 @@
       "Read(~/.gnupg/**)",
       "Read(/etc/**)",
       "Read(/var/**)",
-      "Read(/private/**)"
+      "Read(/private/**)",
+      "Bash(open *)"
     ],
     "ask": [
       "Bash(git push *)",
@@ -84,7 +86,7 @@
     ],
     "defaultMode": "default"
   },
-  "model": "haiku",
+  "model": "claude-sonnet-4-6",
   "enableAllProjectMcpServers": false,
   "enabledMcpjsonServers": [],
   "allowedMcpServers": [],
@@ -105,7 +107,7 @@
     "type": "command",
     "command": "npx -y ccstatusline@latest",
     "padding": 0,
-    "refreshInterval": 10
+    "refreshInterval": 5
   },
   "enabledPlugins": {
     "claude-md-management@claude-plugins-official": true,
@@ -126,7 +128,7 @@
     ]
   },
   "spinnerTipsEnabled": true,
-  "effortLevel": "medium",
+  "effortLevel": "low",
   "showClearContextOnPlanAccept": true,
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
