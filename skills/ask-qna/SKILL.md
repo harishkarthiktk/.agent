@@ -152,6 +152,7 @@ When implementing a skill that uses AskUserQuestion:
 
 ## Key Best Practices
 
+- **Every question must have at least 2 options.** A question with one option has no real decision in it. If you only have one path, state it as the approach you're taking and proceed - do not wrap it in AskUserQuestion.
 - Include 1-4 questions per interaction (not more)
 - Mark recommended options with "(Recommended)" in the label
 - Provide brief descriptions for each option explaining trade-offs
@@ -164,6 +165,7 @@ When implementing a skill that uses AskUserQuestion:
 
 ## Anti-Patterns to Avoid
 
+- Passing fewer than 2 options to any question - the tool will reject the entire call with a validation error; state the single path as your approach instead
 - Asking yes/no questions (use options instead)
 - Asking yes/no questions that have obvious answers (if the answer is clear, don't ask)
 - Asking for confirmation on every small decision (trivial choices don't warrant questions)
