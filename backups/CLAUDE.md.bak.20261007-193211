@@ -1,5 +1,64 @@
 # Claude Code User Preferences
 
+## Operation Constraints
+
+**Applies to:** All work except quick fixes/lookups (read-only exploration, single-file edits, factual questions).
+
+Terminology: "user" = the human. The assistant never grants itself an exception.
+
+### 1. Subagent Models
+
+- Set `model: haiku` on every Agent call, including research agents that use WebSearch/WebFetch.
+- Use a different model only if the user names it in chat. A model named in a plan counts only if the user approved that plan.
+- Fork subagents inherit the parent model. Do not use fork when Haiku is required.
+
+### 2. Plans Include Implementation Skeletons
+
+- Plans include skeleton code: file paths, function signatures, types, and key imports. Bodies are `TODO` comments, no full logic.
+- End the plan with a "Handover" section: files to touch, order of work, conventions, and the implementation model (default haiku).
+- Implementation follows the skeletons. If you need to deviate, ask the user first.
+
+### 3. Tasks and .todo File
+
+- Start implementation with `/make-to-do`. It creates the Tasks, which are the source of truth.
+- Mirror every task into `.todo` at the project root (`- [ ]` / `- [x]`) in the same turn as each status change.
+- Keep one task `in_progress` at a time. Mark dropped tasks as deleted and strike them through in `.todo`.
+- If Task tools are unavailable, use `.todo` only and tell the user once. Do not change settings or env vars.
+- Make sure `.todo` is in `.gitignore`. When all tasks are complete, use AskUserQuestion to ask whether to delete `.todo`.
+
+### 4. Choices
+
+- Whenever the user must pick between 2 or more options, use AskUserQuestion. Never list options in prose.
+- Give 2-4 options. Put the recommended one first with "(Recommended)" in its label. Give each option a one-line tradeoff.
+- Subagents can't ask the user. They return options to the parent, which asks.
+
+### 5. Test Execution
+
+- Tests (pytest, jest, vitest, npm test, and similar) run only when the user asks in this conversation.
+- The main agent never runs tests. It delegates them to a `model: haiku` subagent, even when the user asks for a run.
+- Allowed without asking: type checks, lint, and format checks. Everything else, such as builds, installs, and project scripts, needs user approval.
+- Never write tests unless the user asks. You may suggest tests for critical code, then wait.
+
+### 6. Test Failures
+
+- Before any change, classify the failure as an implementation bug or wrong test expectations, and report which with evidence.
+- Implementation bug: propose the fix and ask before applying it.
+- Wrong expectations: update the test. Delete it only if the feature it covers no longer exists.
+- Before editing or deleting, use AskUserQuestion to list the exact files.
+- Never delete or modify non-test source code, dependencies, or config to make a test pass. Fixtures, mocks, and snapshots count as test code.
+
+### 7. Git
+
+- Do not run `git add`, `commit`, `push`, `reset`, `rebase`, `stash drop`, or `gh pr create` unless the user asks in this conversation.
+- When the user asks to commit, use `/add-n-commit`.
+
+### 8. Attribution (Overrides Claude Code Defaults)
+
+- Do not add a `Co-Authored-By` trailer, "Generated with Claude Code", or any mention of Claude, Anthropic, or AI in commits, PR titles, or PR bodies, unless the user asks.
+- Commit messages describe only the change.
+
+---
+
 ## Git
 - Commit rules enforced via PreToolUse hook: blocks mentions of Claude/Anthropic and auto-commit patterns.
 - Suggest commits; user decides. `/add-n-commit`: short messages.
@@ -8,15 +67,15 @@
 - Prefer functions over classes. No over-engineering or unrequested features.
 
 ## Planning
-- Explore alternate approaches; use `/gather` skills to clarify requirements.
-- When user input is required, always use the above skills or "AskUserQuestion" tool.
-- No code output during planning unless explicitly asked.
+- Explore alternate approaches; use `/ask-qna` or `/ask-qna-fp` to clarify requirements.
+- When user input is required, always use AskUserQuestion tool.
+- No code output during planning unless explicitly asked. Exception: plans may include skeleton code (file paths, signatures, types, imports with TODO bodies) for implementation handoff.
 - Offer to save plan as temporary .md in project root (delete after implementation).
 - Check if README.md needs updating. Offer Haiku switch after planning.
 
 ## User Input
 - AskUserQuestion for ambiguous design decisions or genuine clarification needs.
-- Always use `/gather` skill to get any and all user input; if possilbe always show multiple choices and a top recommendation with reason for the preference.
+- Always present multiple choices with a top recommendation and reasoning when user input is required.
 
 ## Writing Style
 - No emojis, no emdashes (use hyphens/commas). PostToolUse hook warns on violations.
@@ -48,6 +107,7 @@
 - While creating a plan, always include an implementation step to invoke `/make-to-do` skill to create atomic tasks while implementing, and invoke `/caveman` skill with `lite` as argument in the start of the implementation.
 - While implementing a plan, always use `/make-to-do` skill to create task list and then implement. No exceptions, regardless of task size.
 - Do not invoke `open` commands for any file unless asked by the user, as tests will be done manually.
+- Do not generate Artifacts unless user asks explicitly. Always get user confirmation before proceeding with Artifact generation by presenting an alterantive as well.
 
 ## Spreadsheet Operations
 
@@ -71,9 +131,8 @@ Token-efficient rules for all file operations:
 - Fix implementation if wrong, fix test only if expectations are incorrect. Never auto-fix.
 
 ## Models
-- Default model: Sonnet.
-- All subagents use Sonnet unless user explicitly specifies otherwise.
-- Use Haiku only when user requests it or for trivial lookups where accuracy is not critical.
+- Default model: Haiku
+- All subagents use Haiku unless user explicitly specifies otherwise in this conversation.
 - Use Opus only when user explicitly requests it.
 
 ## Command Permissions

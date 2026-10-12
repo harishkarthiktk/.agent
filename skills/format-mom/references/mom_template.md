@@ -5,7 +5,6 @@ tags:
   - quicknote
   - mom
 type: note
-status: draft
 ---
 
 ## {{title}}

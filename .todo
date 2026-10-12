@@ -1,0 +1,13 @@
+# AGENT_INSTRUCTIONS Restructure
+
+- [x] Create ~/.agent/AGENT_INSTRUCTIONS directory
+- [x] Write agents-common.md (shared body, canonical terms, zero runtime refs)
+- [x] Write claude-specific.md
+- [x] Write opencode-specific.md
+- [x] Write CLAUDE.md shim (@imports)
+- [x] Write AGENTS.md shim (one-line pointer)
+- [x] Backup + symlink ~/.claude/CLAUDE.md (repointed; backed up to ~/.agent/backups/)
+- [x] Symlink ~/.config/opencode/AGENTS.md
+- [x] Write ~/.config/opencode/opencode.json (instructions array)
+- [x] Write reference.txt (distribution map + reasoning)
+- [x] Verify loading in both CLIs (symlinks resolve, all files readable, JSON valid; OpenCode shim confirmed live in-session - full load check in a fresh session)

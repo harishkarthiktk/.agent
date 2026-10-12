@@ -1,0 +1,73 @@
+# AGENT_INSTRUCTIONS Distribution Reference
+Created: 2026-10-07
+
+## Source of Truth
+All instruction content is authored in ~/.agent/AGENT_INSTRUCTIONS/ only.
+Edit files THERE; never edit the symlinked destinations.
+
+## What Went Where
+
+| Source file (real) | Destination (symlink / config ref) | Loaded by |
+|---|---|---|
+| AGENT_INSTRUCTIONS/CLAUDE.md | ~/.claude/CLAUDE.md (symlink) | Claude Code, every session |
+| AGENT_INSTRUCTIONS/AGENTS.md | ~/.config/opencode/AGENTS.md (symlink) | OpenCode v2, every session |
+| AGENT_INSTRUCTIONS/agents-common.md | Referenced two ways (see below) | Both CLIs |
+| AGENT_INSTRUCTIONS/agents-common.md | ~/.agents/AGENTS.md (symlink) | Any tool reading the cross-agent global dir |
+| AGENT_INSTRUCTIONS/claude-specific.md | Via @import inside CLAUDE.md shim | Claude Code only |
+| AGENT_INSTRUCTIONS/opencode-specific.md | Via "instructions" array in ~/.config/opencode/opencode.json | OpenCode only |
+
+## Loading chains
+
+Claude Code:
+  ~/.claude/CLAUDE.md  ->  @agents-common.md + @claude-specific.md
+
+OpenCode v2:
+  ~/.config/opencode/AGENTS.md (shim, one-line pointer)
+  ~/.config/opencode/opencode.json "instructions" array:
+      agents-common.md + opencode-specific.md  (eager, deterministic)
+
+## Contamination guarantees
+- Claude Code never sees any path to opencode-specific.md.
+- OpenCode never sees any path to claude-specific.md.
+- agents-common.md contains zero file references, so nothing leaks from it.
+- Claude Code falls back to AGENTS.md only when CLAUDE.md is absent; CLAUDE.md
+  exists, so the fallback never fires.
+
+## Backups (pre-change state)
+~/.agent/backups/
+  - CLAUDE.md.bak.20261007-193211        (original content, resolved from ~/.claude/CLAUDE.md symlink)
+  - agent-CLAUDE.md.bak.20261007-193211  (original ~/.agent/CLAUDE.md, same content)
+  - agent-CLAUDE.md.bak.20261007-204143  (~/.agent/CLAUDE.md real file, pre-restructure original)
+  - CLAUDE_default.md.bak.20261007-204143 (~/.agent/CLAUDE_default.md)
+  - CLAUDE.md.original.20261007          (~/.agent/CLAUDE.md moved out of the workspace root; now fully superseded by AGENT_INSTRUCTIONS/)
+
+Stale symlink fix: ~/.agents/AGENTS.md previously pointed to the old
+~/.agent/CLAUDE.md; repointed to agents-common.md so cross-agent tools reading
+the ~/.agents global dir get the current shared body (no runtime-specific
+content - correct for a generic entry point).
+
+## Reasoning notes
+1. Single source of truth: 5 authored files, 2 symlinks, 1 config ref. Rule
+   edits happen once, in ~/.agent/AGENT_INSTRUCTIONS/, and reach both CLIs.
+2. Shims over plain symlinking of one big file: each CLI must load DIFFERENT
+   runtime-specific rules. Claude Code reads CLAUDE.md, OpenCode reads
+   AGENTS.md; the shim pattern lets both share one body without cross-loading.
+3. Config "instructions" array for OpenCode specifics instead of @references:
+   OpenCode has no native eager @import (that is Claude Code only; in OpenCode
+   @refs are a lazy, model-dependent convention). The instructions array
+   loads deterministically every session.
+4. No @refs inside agents-common.md: Claude Code follows @imports eagerly and
+   recursively. Any ref placed there would load for BOTH runtimes, breaking
+   isolation.
+5. Canonical tool terms (SHELL/QUESTION/SUBAGENT) in the shared body with a
+   mapping table instead of IF-conditionals: one lookup beats many scattered
+   runtime branches; models follow mapping tables more reliably.
+6. Runtime-divergent behavior (subagent model syntax, hooks vs plugins,
+   memory, skills frontmatter) moved into the two specific files rather than
+   conditionalized inline.
+7. ~/.claude/CLAUDE.md was ALREADY a symlink (to ~/.agent/CLAUDE.md); it was
+   repointed, not overwritten. Original content backed up anyway.
+
+## Rollback
+  ln -sfn ~/.agent/CLAUDE.md ~/.claude/CLAUDE.md   (restore original state)
+  rm ~/.config/opencode/AGENTS.md ~/.config/opencode/opencode.json

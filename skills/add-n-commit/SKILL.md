@@ -52,12 +52,9 @@ If nothing is staged (per `rtk git status`), inform the user and abort. A stat s
 - No emojis, tick icons, or cross icons
 
 ### 6 - Confirm
-
-Show the message labeled "(round 1 of 3)" and ask for confirmation.
-
-- Confirmed: commit
-- Feedback: regenerate, show as "(round 2 of 3)" then "(round 3 of 3)"
-- After 3 rounds without confirmation: abort and inform the user
+- If there are multiple levels of commits possible, stage them incrementally and commit incrementally using relevant message.
+- Show the message labeled "(round 1 of X)" and ask for confirmation.
+- Show each commit process, get confirmation and then move to next.
 
 ### 7 - Commit and show result
 

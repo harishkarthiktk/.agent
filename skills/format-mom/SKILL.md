@@ -10,7 +10,8 @@ This skill converts unstructured meeting notes into your standardized Minutes of
 - Parses raw notes and extracts metadata (title, date, participants, links)
 - Respects existing section boundaries in the input
 - Identifies natural groupings within discussion points and suggests reorganization
-- Generates a formatted MoM file ready to save
+- Generates a formatted MoM file ready to save.
+- Change from given text only if changes benefit a narrative; otherwise stick to source text and only format as required.
 - Asks for approval before finalizing
 
 ## Process
@@ -105,7 +106,7 @@ Bob will handle the blog post announcement.
 - Title: Q4 Planning Session
 - Participants: Alice, Bob
 - Links: dashboard URL, GitHub issue
-- Discussion Points (grouped):
+- Discussion Points (grouped): ## Use First Person language instead of declarative statements.
   1. API design
   2. Performance optimization
 - Outcomes/Decisions:
@@ -120,7 +121,7 @@ Bob will handle the blog post announcement.
 - When suggesting groupings, explain the logic (topic-based, by owner, by timeline, etc.)
 - If Outcomes/Decisions is empty but the user mentioned action items elsewhere, suggest moving them there
 - Preserve direct quotes or specific details from the meeting
-- Mark the status as `draft` by default (can be changed later)
+- Mark the status as `#notupdated` by default (can be changed later)
 - **Clean output:** Only show sections with content. Never leave empty sections or placeholder text in the final output
 
 ## Template Reference
