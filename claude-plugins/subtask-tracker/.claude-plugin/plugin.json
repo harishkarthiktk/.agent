@@ -1,0 +1,6 @@
+{
+  "name": "subtask-tracker",
+  "version": "0.1.0",
+  "description": "Live pane showing tasks from .todo in the project root",
+  "types": "./types/index.d.ts"
+}
