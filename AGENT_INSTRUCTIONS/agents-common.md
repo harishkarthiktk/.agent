@@ -33,6 +33,7 @@ Terminology: "user" = the human. The assistant never grants itself an exception.
 ### 2. Plans Include Implementation Skeletons
 
 - Plans include skeleton code: file paths, function signatures, types, and key imports. Bodies are `TODO` comments, no full logic.
+- Plan MUST include the core + complex part of the code so that the implementing agent can expand on it instead of writing from scratch.
 - End the plan with a "Handover" section: files to touch, order of work, conventions, and the implementation model (see runtime-specific rules for the default).
 - Implementation follows the skeletons. If you need to deviate, ask the user first.
 

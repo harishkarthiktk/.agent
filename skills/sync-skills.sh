@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SOURCE="$(cd "$(dirname "$0")" && pwd)"
+SOURCE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 TARGETS=("$HOME/.agents/skills" "$HOME/.claude/skills")
 
 FIX_CONFLICTS=false
@@ -63,8 +63,8 @@ sync_target() {
     if [ -L "$target_ent" ]; then
       local link_target
       link_target="$(readlink "$target_ent")"
-      local resolved_source="$(cd "$skill_path" && pwd)"
-      local resolved_target="$(cd "$(dirname "$target_ent")" && cd "$(dirname "$link_target")" 2>/dev/null && pwd 2>/dev/null || echo "")"
+      local resolved_source="$(cd "$skill_path" && pwd -P)"
+      local resolved_target="$(cd "$(dirname "$target_ent")" && cd "$(dirname "$link_target")" 2>/dev/null && pwd -P 2>/dev/null || echo "")"
       local resolved
       if [ -n "$resolved_target" ]; then
         resolved="$resolved_target/$(basename "$link_target")"
@@ -85,7 +85,9 @@ sync_target() {
         fi
       fi
     elif [ -e "$target_ent" ]; then
-      echo "  [CONFLICT] $skill -> real $(basename "$(stat -f '%HT' "$target_ent" 2>/dev/null || file "$target_ent")") exists"
+      local ent_kind="file"
+      [ -d "$target_ent" ] && ent_kind="directory"
+      echo "  [CONFLICT] $skill -> real $ent_kind exists"
       summary_conflict=$((summary_conflict + 1))
       if $FIX_CONFLICTS; then
         local bak="$target_ent.bak.$timestamp"
@@ -105,7 +107,7 @@ sync_target() {
 clean_orphans_in_target() {
   local target="$1"
 
-  find -L "$target" -maxdepth 1 -type l 2>/dev/null | while read -r orphan; do
+  while read -r orphan; do
     local name
     name="$(basename "$orphan")"
     local link_target
@@ -123,7 +125,7 @@ clean_orphans_in_target() {
         ;;
       *) ;;
     esac
-  done
+  done < <(find -L "$target" -maxdepth 1 -type l 2>/dev/null)
 }
 
 for target in "${TARGETS[@]}"; do

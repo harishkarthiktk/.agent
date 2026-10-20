@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Symlink agent instruction files into ~/.claude and ~/.agents.
+# Symlink agent instruction files into ~/.claude, ~/.agents and ~/.agent/AGENT_INSTRUCTIONS.
 # Linux and macOS. Safe to re-run.
 
 set -euo pipefail
@@ -13,6 +13,9 @@ LINKS=(
   "claude-specific.md:$HOME/.claude"
   "AGENTS.md:$HOME/.agents"
   "agents-common.md:$HOME/.agents"
+  # Import targets referenced by CLAUDE.md
+  "agents-common.md:$HOME/.agent/AGENT_INSTRUCTIONS"
+  "claude-specific.md:$HOME/.agent/AGENT_INSTRUCTIONS"
 )
 
 link_file() {
